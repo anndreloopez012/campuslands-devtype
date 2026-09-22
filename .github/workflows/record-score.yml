@@ -7,6 +7,7 @@ on:
 permissions:
   contents: write
   issues: write
+  actions: write
 
 jobs:
   process-score:
@@ -42,7 +43,7 @@ jobs:
             git push origin main
           fi
 
-      - name: Comment and close issue
+      - name: Comment, close issue and trigger Pages deploy
         uses: actions/github-script@v7
         with:
           script: |
@@ -68,3 +69,15 @@ jobs:
               state: 'closed',
               state_reason: 'completed'
             });
+
+            try {
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'deploy.yml',
+                ref: 'main'
+              });
+              console.log('Despliegue a GitHub Pages disparado exitosamente');
+            } catch (e) {
+              console.warn('Aviso al disparar deploy workflow:', e.message);
+            }
