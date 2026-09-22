@@ -1,4 +1,5 @@
 import React from 'react';
+import { Sparkles, Layers, Cpu } from 'lucide-react';
 import { CamperLevel } from '../types';
 import { LEVEL_METADATA } from '../data/codeSnippets';
 
@@ -12,6 +13,17 @@ export const LevelSelector: React.FC<LevelSelectorProps> = ({
   onSelectLevel
 }) => {
   const levels: CamperLevel[] = ['junior', 'mid', 'senior'];
+
+  const getLevelIcon = (lvl: CamperLevel) => {
+    switch (lvl) {
+      case 'junior':
+        return <Sparkles className="w-3.5 h-3.5 text-brand-sky" />;
+      case 'mid':
+        return <Layers className="w-3.5 h-3.5 text-brand-aqua" />;
+      case 'senior':
+        return <Cpu className="w-3.5 h-3.5 text-brand-amber" />;
+    }
+  };
 
   return (
     <div id="tour-level-selector" className="flex items-center gap-1.5 bg-brand-darker/80 p-1 rounded-xl border border-brand-border/60">
@@ -30,7 +42,7 @@ export const LevelSelector: React.FC<LevelSelectorProps> = ({
             }`}
             title={meta.description}
           >
-            <span>{meta.badge.split(' ')[0]}</span>
+            {getLevelIcon(lvl)}
             <span className="capitalize">{lvl}</span>
           </button>
         );

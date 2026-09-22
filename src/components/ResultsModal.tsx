@@ -198,10 +198,10 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
   };
 
   const getSpeedVerdict = (wpm: number) => {
-    if (wpm >= 95) return { title: '🌌 VELOCIDAD CÓSMICA', desc: 'Tu velocidad de tipeo está en el top 1% de desarrolladores.' };
-    if (wpm >= 75) return { title: '🚀 NIVEL ASTRONAUTA', desc: 'Ritmo excepcional para escribir algoritmos en caliente.' };
-    if (wpm >= 50) return { title: '🛸 CAMPER EXPLORER', desc: 'Excelente fluidez y solidez en sintaxis de programación.' };
-    return { title: '🌱 EN ENTRENAMIENTO', desc: '¡Gran práctica! La memoria muscular se forja línea a línea.' };
+    if (wpm >= 95) return { title: 'VELOCIDAD CÓSMICA', desc: 'Tu velocidad de tipeo está en el top 1% de desarrolladores.' };
+    if (wpm >= 75) return { title: 'NIVEL ASTRONAUTA', desc: 'Ritmo excepcional para escribir algoritmos en caliente.' };
+    if (wpm >= 50) return { title: 'CAMPER EXPLORER', desc: 'Excelente fluidez y solidez en sintaxis de programación.' };
+    return { title: 'EN ENTRENAMIENTO', desc: '¡Gran práctica! La memoria muscular se forja línea a línea.' };
   };
 
   const verdict = getSpeedVerdict(stats.wpm);
@@ -285,8 +285,9 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
                   <span>@{user.username} listo para Git</span>
                 </span>
               ) : (
-                <span className="text-[10px] text-brand-amber bg-brand-amber/10 px-2 py-0.5 rounded border border-brand-amber/30">
-                  ⚠️ Perfil predeterminado
+                <span className="flex items-center gap-1 text-[10px] text-brand-amber bg-brand-amber/10 px-2 py-0.5 rounded border border-brand-amber/30">
+                  <AlertTriangle className="w-3 h-3 text-brand-amber inline" />
+                  Perfil predeterminado
                 </span>
               )}
             </div>

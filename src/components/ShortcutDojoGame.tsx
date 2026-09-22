@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Keyboard, CheckCircle2, Trophy, RotateCcw, Sparkles } from 'lucide-react';
+import { Keyboard, CheckCircle2, Trophy, RotateCcw, Sparkles, Flame } from 'lucide-react';
 import { VSCODE_SHORTCUTS } from '../data/shortcutsData';
 import { soundEngine } from '../audio/soundEngine';
 import { ShortcutItem } from '../types';
@@ -158,7 +158,10 @@ export const ShortcutDojoGame: React.FC<ShortcutDojoGameProps> = ({ onFinishDojo
           </div>
           <div className="text-right">
             <p className="text-[10px] font-mono text-slate-400 uppercase">Racha</p>
-            <p className="text-xl font-black text-brand-amber font-mono">{streak}🔥</p>
+            <p className="text-xl font-black text-brand-amber font-mono flex items-center justify-end gap-1">
+              <span>{streak}</span>
+              <Flame className="w-4 h-4 text-brand-amber" />
+            </p>
           </div>
         </div>
       </div>

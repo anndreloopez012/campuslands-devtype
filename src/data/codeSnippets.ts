@@ -557,20 +557,20 @@ SELECT * FROM RankedScores WHERE ranking_pos <= 3;`
 ];
 
 export const LANGUAGE_METADATA: Record<SupportedLanguage, { label: string; icon: string; color: string }> = {
-  javascript: { label: 'JavaScript', icon: '⚡', color: '#F7DF1E' },
-  typescript: { label: 'TypeScript', icon: '🔷', color: '#3178C6' },
-  python: { label: 'Python', icon: '🐍', color: '#3776AB' },
-  java: { label: 'Java', icon: '☕', color: '#ED8B00' },
-  csharp: { label: 'C#', icon: '🎯', color: '#239120' },
-  php: { label: 'PHP', icon: '🐘', color: '#777BB4' },
-  go: { label: 'Go (Golang)', icon: '🐹', color: '#00ADD8' },
-  rust: { label: 'Rust', icon: '🦀', color: '#DEA584' },
-  sql: { label: 'SQL', icon: '🗄️', color: '#00BCF2' },
-  html_css: { label: 'HTML / CSS', icon: '🎨', color: '#E34F26' },
+  javascript: { label: 'JavaScript', icon: 'devicon-javascript-plain', color: '#F7DF1E' },
+  typescript: { label: 'TypeScript', icon: 'devicon-typescript-plain', color: '#3178C6' },
+  python: { label: 'Python', icon: 'devicon-python-plain', color: '#3776AB' },
+  java: { label: 'Java', icon: 'devicon-java-plain', color: '#ED8B00' },
+  csharp: { label: 'C#', icon: 'devicon-csharp-plain', color: '#68217A' },
+  php: { label: 'PHP', icon: 'devicon-php-plain', color: '#777BB4' },
+  go: { label: 'Go (Golang)', icon: 'devicon-go-plain', color: '#00ADD8' },
+  rust: { label: 'Rust', icon: 'devicon-rust-original', color: '#DEA584' },
+  sql: { label: 'SQL', icon: 'devicon-postgresql-plain', color: '#336791' },
+  html_css: { label: 'HTML / CSS', icon: 'devicon-html5-plain', color: '#E34F26' },
 };
 
 export const LEVEL_METADATA: Record<CamperLevel, { label: string; badge: string; description: string }> = {
-  junior: { label: 'Camper Padawan (Junior)', badge: '🚀 Nivel 1', description: 'Sintaxis básica, bucles y lógica inicial' },
-  mid: { label: 'Camper Explorer (Mid)', badge: '🛸 Nivel 2', description: 'Async/await, tipado, métodos funcionales' },
-  senior: { label: 'Astronaut Hacker (Senior)', badge: '🌌 Nivel 3', description: 'Algoritmos, concurrencia y patrones' },
+  junior: { label: 'Camper Padawan (Junior)', badge: 'Nivel 1', description: 'Sintaxis básica, bucles y lógica inicial' },
+  mid: { label: 'Camper Explorer (Mid)', badge: 'Nivel 2', description: 'Async/await, tipado, métodos funcionales' },
+  senior: { label: 'Astronaut Hacker (Senior)', badge: 'Nivel 3', description: 'Algoritmos, concurrencia y patrones' },
 };

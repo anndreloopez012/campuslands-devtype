@@ -1,6 +1,7 @@
 import React from 'react';
 import { SupportedLanguage } from '../types';
 import { LANGUAGE_METADATA } from '../data/codeSnippets';
+import { LanguageIcon } from './LanguageIcon';
 
 interface LanguageSelectorProps {
   currentLanguage: SupportedLanguage;
@@ -20,8 +21,9 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           <span className="w-2 h-2 rounded-full bg-brand-cyan"></span>
           Lenguaje de Programación
         </span>
-        <span className="text-[11px] text-brand-sky font-mono hidden sm:inline">
-          {LANGUAGE_METADATA[currentLanguage].label} seleccionado
+        <span className="text-[11px] text-brand-sky font-mono hidden sm:inline flex items-center gap-1.5">
+          <LanguageIcon language={currentLanguage} size={14} />
+          <span>{LANGUAGE_METADATA[currentLanguage].label} seleccionado</span>
         </span>
       </div>
 
@@ -40,7 +42,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                   : 'bg-brand-darker/80 border-brand-border/60 text-slate-300 hover:border-brand-sky/50 hover:bg-brand-surface'
               }`}
             >
-              <span className="text-sm">{meta.icon}</span>
+              <LanguageIcon language={lang} size={16} />
               <span>{meta.label}</span>
               {isSelected && (
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-aqua animate-pulse"></span>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { X, Trophy, Search, RotateCcw, Check, GitBranch } from 'lucide-react';
+import { X, Trophy, Search, RotateCcw, Check, GitBranch, Medal } from 'lucide-react';
 import { ScoreRecord, SupportedLanguage, CamperLevel, GameMode } from '../types';
 import { getFilteredLeaderboard, fetchRemoteScores } from '../data/leaderboardData';
 import { LANGUAGE_METADATA } from '../data/codeSnippets';
+import { LanguageIcon } from './LanguageIcon';
 
 interface LeaderboardModalProps {
   isOpen: boolean;
@@ -58,12 +59,14 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
             </div>
             <div>
               <h3 className="text-xl font-black text-white flex items-center gap-2">
-                <span>Ranking Oficial Campuslands</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-aqua/20 text-brand-aqua border border-brand-aqua/30 font-mono">
-                  Git Sync Activo
+                <span>Ranking Oficial de Campers</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/40">
+                  Campuslands Git
                 </span>
               </h3>
-              <p className="text-xs text-slate-400">Tabla de posiciones de campers sincronizada en tiempo real</p>
+              <p className="text-xs text-slate-400 font-mono mt-0.5">
+                Récords oficiales sincronizados y validados por GitHub Actions
+              </p>
             </div>
           </div>
 
@@ -71,33 +74,32 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
             <button
               onClick={handleManualRefresh}
               disabled={isRefreshing}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand-surface hover:bg-brand-surfaceLight border border-brand-border text-brand-sky font-semibold text-xs transition-all cursor-pointer disabled:opacity-50"
-              title="Sincronizar puntajes desde el repositorio de Git"
+              className="p-2 rounded-xl bg-brand-surface hover:bg-brand-surfaceLight border border-brand-border text-slate-300 hover:text-white transition-all disabled:opacity-50"
+              title="Actualizar tabla desde Git"
             >
-              <RotateCcw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
-              <span className="hidden sm:inline">Sincronizar Git</span>
+              <RotateCcw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-brand-cyan' : ''}`} />
             </button>
 
             <button
               onClick={onClose}
-              className="p-2 rounded-xl bg-brand-darker/60 hover:bg-brand-surface border border-brand-border/60 text-slate-400 hover:text-white transition-all cursor-pointer"
+              className="p-2 rounded-xl bg-brand-surface hover:bg-brand-coral/20 border border-brand-border text-slate-400 hover:text-brand-coral transition-all"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Filters Row */}
-        <div className="py-4 grid grid-cols-1 sm:grid-cols-4 gap-2.5 border-b border-brand-border/40">
-          {/* Search */}
+        {/* Filter Controls Bar */}
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5 py-4 border-b border-brand-border/40">
+          {/* Search box */}
           <div className="relative">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
             <input
               type="text"
-              placeholder="Buscar camper..."
+              placeholder="Buscar camper o sede..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-brand-darker border border-brand-border rounded-xl py-2 pl-8 pr-3 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-brand-cyan"
+              className="w-full bg-brand-darker border border-brand-border rounded-xl py-2 pl-9 pr-3 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-brand-cyan"
             />
           </div>
 
@@ -107,10 +109,10 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
             onChange={(e) => setSelectedLang(e.target.value as SupportedLanguage | 'all')}
             className="bg-brand-darker border border-brand-border rounded-xl py-2 px-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-cyan"
           >
-            <option value="all">🌐 Todos los Lenguajes</option>
+            <option value="all">Todos los Lenguajes</option>
             {Object.entries(LANGUAGE_METADATA).map(([key, val]) => (
               <option key={key} value={key}>
-                {val.icon} {val.label}
+                {val.label}
               </option>
             ))}
           </select>
@@ -121,10 +123,10 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
             onChange={(e) => setSelectedLevel(e.target.value as CamperLevel | 'all')}
             className="bg-brand-darker border border-brand-border rounded-xl py-2 px-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-cyan"
           >
-            <option value="all">⭐ Todos los Niveles</option>
-            <option value="junior">🚀 Junior (Padawan)</option>
-            <option value="mid">🛸 Mid (Explorer)</option>
-            <option value="senior">🌌 Senior (Astronaut)</option>
+            <option value="all">Todos los Niveles</option>
+            <option value="junior">Junior (Padawan)</option>
+            <option value="mid">Mid (Explorer)</option>
+            <option value="senior">Senior (Astronaut)</option>
           </select>
 
           {/* Mode filter */}
@@ -133,11 +135,11 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
             onChange={(e) => setSelectedMode(e.target.value as GameMode | 'all')}
             className="bg-brand-darker border border-brand-border rounded-xl py-2 px-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-cyan"
           >
-            <option value="all">🎮 Todos los Modos</option>
-            <option value="sprint">⚡ Speed Sprint</option>
-            <option value="blaster">👾 Bug Blaster</option>
-            <option value="shortcuts">⌨️ Shortcuts Dojo</option>
-            <option value="symbols">🎯 Symbol Storm</option>
+            <option value="all">Todos los Modos</option>
+            <option value="sprint">Speed Sprint</option>
+            <option value="blaster">Bug Blaster</option>
+            <option value="shortcuts">Shortcuts Dojo</option>
+            <option value="symbols">Symbol Storm</option>
           </select>
         </div>
 
@@ -152,15 +154,16 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
                   'from-slate-300/20 to-slate-400/5 border-slate-300/60 text-slate-200',
                   'from-amber-700/20 to-amber-900/5 border-amber-600/60 text-amber-500'
                 ];
-                const labels = ['🥇 1er Lugar', '🥈 2do Lugar', '🥉 3er Lugar'];
+                const labels = ['1er Lugar', '2do Lugar', '3er Lugar'];
 
                 return (
                   <div
                     key={record.id}
                     className={`bg-gradient-to-b ${colors[index]} border-2 rounded-2xl p-4 flex flex-col items-center text-center relative shadow-lg`}
                   >
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
-                      {labels[index]}
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider mb-2 flex items-center gap-1">
+                      <Medal className="w-3.5 h-3.5" />
+                      <span>{labels[index]}</span>
                     </span>
 
                     <img
@@ -173,35 +176,33 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
                       }}
                     />
 
-                    <h4 className="font-bold text-white text-sm leading-tight">
-                      {record.camperName}
-                    </h4>
-                    <a
-                      href={`https://github.com/${record.githubUsername}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-brand-sky hover:underline font-mono"
-                    >
-                      @{record.githubUsername}
-                    </a>
-                    <p className="text-[10px] text-slate-400 mt-1">{record.campus}</p>
+                    <p className="font-bold text-white text-sm leading-tight">{record.camperName}</p>
+                    <p className="text-xs text-brand-sky font-mono mt-0.5">@{record.githubUsername}</p>
+                    <span className="text-[10px] text-slate-400 font-mono mt-0.5">{record.campus}</span>
 
-                    {record.verifiedInGit && (
-                      <span className="mt-1.5 inline-flex items-center gap-1 text-[9px] font-mono px-2 py-0.5 rounded-full bg-brand-aqua/20 text-brand-aqua border border-brand-aqua/40">
-                        <Check className="w-3 h-3" /> Git Verificado
-                      </span>
-                    )}
-
-                    <div className="mt-3 flex items-center justify-center gap-3 w-full pt-2 border-t border-white/10">
+                    <div className="mt-3 pt-3 border-t border-white/10 w-full flex items-center justify-around">
                       <div>
-                        <span className="text-[9px] text-slate-400 block font-mono">WPM</span>
-                        <strong className="text-base text-white font-mono font-black">{record.wpm}</strong>
+                        <span className="text-[9px] text-slate-400 block font-mono">Velocidad</span>
+                        <strong className="text-lg text-white font-mono font-black">{record.wpm} WPM</strong>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <span className="text-[9px] text-slate-400 block font-mono">Lenguaje</span>
+                        <div className="flex items-center gap-1 mt-0.5">
+                          <LanguageIcon language={record.language} size={14} />
+                          <span className="text-xs text-brand-sky font-mono font-bold">{LANGUAGE_METADATA[record.language]?.label}</span>
+                        </div>
                       </div>
                       <div>
                         <span className="text-[9px] text-slate-400 block font-mono">Precisión</span>
                         <strong className="text-base text-brand-aqua font-mono font-black">{record.accuracy}%</strong>
                       </div>
                     </div>
+
+                    {record.verifiedInGit && (
+                      <span className="mt-2 inline-flex items-center gap-1 text-[9px] font-mono px-2 py-0.5 rounded-full bg-brand-aqua/20 text-brand-aqua border border-brand-aqua/40">
+                        <Check className="w-3 h-3" /> Git Verificado
+                      </span>
+                    )}
                   </div>
                 );
               })}
@@ -256,8 +257,9 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
                       {r.campus}
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <span className="px-2 py-0.5 rounded-full bg-brand-surface border border-brand-border/60 text-[10px] text-slate-300">
-                        {LANGUAGE_METADATA[r.language]?.label || r.language}
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-brand-surface border border-brand-border/60 text-[10px] text-slate-300">
+                        <LanguageIcon language={r.language} size={12} />
+                        <span>{LANGUAGE_METADATA[r.language]?.label || r.language}</span>
                       </span>
                     </td>
                     <td className="py-3 px-4 text-center">

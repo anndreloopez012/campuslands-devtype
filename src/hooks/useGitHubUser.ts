@@ -9,7 +9,7 @@ const DEFAULT_USER: GitHubUser = {
   avatarUrl: 'https://avatars.githubusercontent.com/u/104395015?v=4',
   bio: 'Estudiante apasionado en Campuslands aprendiendo a programar con superpoderes de tipeo.',
   publicRepos: 12,
-  rankBadge: '🚀 Camper Astronauta'
+  rankBadge: 'Camper Astronauta'
 };
 
 export function useGitHubUser() {
@@ -53,7 +53,7 @@ export function useGitHubUser() {
             avatarUrl: `https://avatars.githubusercontent.com/${cleanUser}`,
             bio: 'Camper de Campuslands',
             publicRepos: 0,
-            rankBadge: '🛸 Camper Padawan'
+            rankBadge: 'Camper Padawan'
           };
           setUser(fallbackUser);
           setIsLoading(false);
@@ -68,7 +68,7 @@ export function useGitHubUser() {
         avatarUrl: data.avatar_url,
         bio: data.bio || 'Camper de Campuslands explorando el universo del código',
         publicRepos: data.public_repos ?? 0,
-        rankBadge: '🚀 Camper Astronauta'
+        rankBadge: 'Camper Astronauta'
       };
 
       setUser(updatedUser);
@@ -87,10 +87,10 @@ export function useGitHubUser() {
   };
 
   const updateBadgeByWpm = (wpm: number) => {
-    let badge = '🛸 Camper Padawan (Junior)';
-    if (wpm >= 95) badge = '🌌 Alien Hacker (Legendary)';
-    else if (wpm >= 75) badge = '🚀 Astronauta Senior';
-    else if (wpm >= 50) badge = '🛰️ Camper Explorer (Mid)';
+    let badge = 'Camper Padawan (Junior)';
+    if (wpm >= 95) badge = 'Alien Hacker (Legendary)';
+    else if (wpm >= 75) badge = 'Astronauta Senior';
+    else if (wpm >= 50) badge = 'Camper Explorer (Mid)';
 
     setUser(prev => ({ ...prev, rankBadge: badge }));
   };

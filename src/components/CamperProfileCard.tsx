@@ -72,7 +72,7 @@ export const CamperProfileCard: React.FC<CamperProfileCardProps> = ({
               </h4>
               <p className="text-xs text-brand-sky font-mono">@{user.username}</p>
               <div className="mt-1.5 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-cyan/20 border border-brand-cyan/40 text-brand-cyan">
-                {user.rankBadge || '🚀 Camper Astronauta'}
+                {user.rankBadge || 'Camper Astronauta'}
               </div>
             </div>
           </div>

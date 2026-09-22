@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { RotateCcw, Flame, CheckCircle2, ChevronRight, Zap } from 'lucide-react';
+import { RotateCcw, Flame, CheckCircle2, ChevronRight, Zap, Lightbulb } from 'lucide-react';
 import { SnippetItem, WpmSample } from '../types';
 import { useTypingEngine } from '../hooks/useTypingEngine';
 import { VirtualKeyboard } from './VirtualKeyboard';
@@ -121,8 +121,9 @@ export const CodeSprintGame: React.FC<CodeSprintGameProps> = ({
             </div>
           </div>
           {combo >= 20 && (
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-amber/20 text-brand-amber border border-brand-amber/40 animate-pulse">
-              EN LLAMAS 🔥
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-amber/20 text-brand-amber border border-brand-amber/40 animate-pulse flex items-center gap-1">
+              <Flame className="w-3 h-3 text-brand-amber" />
+              <span>EN LLAMAS</span>
             </span>
           )}
         </div>
@@ -214,7 +215,10 @@ export const CodeSprintGame: React.FC<CodeSprintGameProps> = ({
 
         {/* Bottom Tip */}
         <div className="mt-6 pt-4 border-t border-brand-border/30 flex items-center justify-between text-xs text-slate-400 font-mono select-none">
-          <span>💡 Presiona <kbd className="px-1.5 py-0.5 rounded bg-brand-darker border border-brand-border text-brand-sky">Enter</kbd> para saltar líneas (la auto-sangría se añade sola).</span>
+          <span className="flex items-center gap-1.5">
+            <Lightbulb className="w-3.5 h-3.5 text-brand-cyan" />
+            <span>Presiona <kbd className="px-1.5 py-0.5 rounded bg-brand-darker border border-brand-border text-brand-sky">Enter</kbd> para saltar líneas (la auto-sangría se añade sola).</span>
+          </span>
           <span className="hidden sm:inline">Fragmento {lines.length} líneas</span>
         </div>
       </div>

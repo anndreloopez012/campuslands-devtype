@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { HelpCircle } from 'lucide-react';
 import { Header } from './components/Header';
 import { LanguageSelector } from './components/LanguageSelector';
 import { LevelSelector } from './components/LevelSelector';
@@ -196,9 +197,10 @@ export function App() {
           <div className="flex items-center gap-4 flex-wrap justify-center">
             <button
               onClick={startFaqTour}
-              className="text-brand-cyan hover:text-white transition-colors cursor-pointer flex items-center gap-1 font-semibold"
+              className="text-brand-cyan hover:text-white transition-colors cursor-pointer flex items-center gap-1.5 font-semibold"
             >
-              <span>💡</span> Guía & FAQ
+              <HelpCircle className="w-3.5 h-3.5" />
+              <span>Guía & FAQ</span>
             </button>
             <span>•</span>
             <button
@@ -238,7 +240,7 @@ export function App() {
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-aqua"></span>
         </span>
         <span className="text-xs font-bold font-mono tracking-wide text-brand-sky group-hover:text-white flex items-center gap-1.5">
-          <span>💡</span>
+          <HelpCircle className="w-3.5 h-3.5 text-brand-cyan" />
           <span>Guía & FAQ</span>
         </span>
       </button>

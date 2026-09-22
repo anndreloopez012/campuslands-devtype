@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Volume2, VolumeX, Trophy, User, Keyboard, Sparkles, Terminal, HelpCircle } from 'lucide-react';
+import { Volume2, VolumeX, Trophy, User, Keyboard, Sparkles, Terminal, HelpCircle, Zap, Bug, Binary, Sliders } from 'lucide-react';
 import { SwitchProfile, GitHubUser, GameMode } from '../types';
 import { soundEngine } from '../audio/soundEngine';
 import { startFaqTour } from '../utils/faqTour';
@@ -90,7 +90,8 @@ export const Header: React.FC<HeaderProps> = ({
                   : 'text-slate-300 hover:text-white hover:bg-brand-surface'
               }`}
             >
-              <span>⚡</span> Speed Sprint
+              <Zap className="w-3.5 h-3.5" />
+              <span>Speed Sprint</span>
             </button>
 
             <button
@@ -101,7 +102,8 @@ export const Header: React.FC<HeaderProps> = ({
                   : 'text-slate-300 hover:text-white hover:bg-brand-surface'
               }`}
             >
-              <span>👾</span> Bug Blaster
+              <Bug className="w-3.5 h-3.5" />
+              <span>Bug Blaster</span>
             </button>
 
             <button
@@ -112,7 +114,8 @@ export const Header: React.FC<HeaderProps> = ({
                   : 'text-slate-300 hover:text-white hover:bg-brand-surface'
               }`}
             >
-              <span>{`{ ; }`}</span> Symbol Storm
+              <Binary className="w-3.5 h-3.5" />
+              <span>Symbol Storm</span>
             </button>
           </div>
 
@@ -147,6 +150,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2.5">
           {/* Switch Sound Picker */}
           <div id="tour-switch-profile" className="hidden sm:flex items-center gap-2 bg-brand-darker/60 p-1.5 px-2.5 rounded-xl border border-brand-border/60">
+            <Sliders className="w-3.5 h-3.5 text-brand-sky" />
             <select
               value={currentProfile}
               onChange={(e) => {
@@ -160,7 +164,7 @@ export const Header: React.FC<HeaderProps> = ({
             >
               {switchOptions.map(opt => (
                 <option key={opt.id} value={opt.id} className="bg-brand-petroleum text-slate-200">
-                  ⌨️ {opt.label}
+                  {opt.label}
                 </option>
               ))}
             </select>

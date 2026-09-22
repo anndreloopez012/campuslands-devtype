@@ -142,7 +142,7 @@ export function generateGitIssuePayload(record: Omit<ScoreRecord, 'id' | 'date'>
   };
 
   const title = `[SCORE] ${record.githubUsername} - ${record.wpm} WPM (${record.language})`;
-  const body = `### 🏆 Solicitud de Registro de Score Oficial en Git
+  const body = `### Solicitud de Registro de Score Oficial en Git
 
 Un camper ha completado una prueba verificada en Campuslands DevType.
 
