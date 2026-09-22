@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Header } from './components/Header';
 import { LanguageSelector } from './components/LanguageSelector';
 import { LevelSelector } from './components/LevelSelector';
@@ -12,7 +12,7 @@ import { ResultsModal } from './components/ResultsModal';
 import { useGitHubUser } from './hooks/useGitHubUser';
 import { SupportedLanguage, CamperLevel, GameMode, SwitchProfile, WpmSample } from './types';
 import { CODE_SNIPPETS } from './data/codeSnippets';
-import { Sparkles, Terminal, Keyboard } from 'lucide-react';
+import { fetchRemoteScores } from './data/leaderboardData';
 
 export function App() {
   const [language, setLanguage] = useState<SupportedLanguage>('javascript');
@@ -50,6 +50,10 @@ export function App() {
     isLoading: userLoading,
     error: userError
   } = useGitHubUser();
+
+  useEffect(() => {
+    fetchRemoteScores();
+  }, []);
 
   // Filter snippets matching current language and level
   const availableSnippets = useMemo(() => {

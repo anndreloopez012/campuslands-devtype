@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { X, Trophy, Medal, Search, Flame, Zap, Award } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Trophy, Search, RotateCcw, Check, GitBranch } from 'lucide-react';
 import { ScoreRecord, SupportedLanguage, CamperLevel, GameMode } from '../types';
-import { getFilteredLeaderboard } from '../data/leaderboardData';
+import { getFilteredLeaderboard, fetchRemoteScores } from '../data/leaderboardData';
 import { LANGUAGE_METADATA } from '../data/codeSnippets';
 
 interface LeaderboardModalProps {
@@ -14,8 +14,28 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
   const [selectedLevel, setSelectedLevel] = useState<CamperLevel | 'all'>('all');
   const [selectedMode, setSelectedMode] = useState<GameMode | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const [, setRefreshTick] = useState<number>(0);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsRefreshing(true);
+      fetchRemoteScores().finally(() => {
+        setIsRefreshing(false);
+        setRefreshTick(t => t + 1);
+      });
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
+
+  const handleManualRefresh = () => {
+    setIsRefreshing(true);
+    fetchRemoteScores().finally(() => {
+      setIsRefreshing(false);
+      setRefreshTick(t => t + 1);
+    });
+  };
 
   const records: ScoreRecord[] = getFilteredLeaderboard(selectedLang, selectedLevel, selectedMode);
 
@@ -26,7 +46,6 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
   );
 
   const top3 = filteredRecords.slice(0, 3);
-  const remaining = filteredRecords.slice(3);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-darker/80 backdrop-blur-md animate-fadeIn">
@@ -41,19 +60,31 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
               <h3 className="text-xl font-black text-white flex items-center gap-2">
                 <span>Ranking Oficial Campuslands</span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-aqua/20 text-brand-aqua border border-brand-aqua/30 font-mono">
-                  En Vivo
+                  Git Sync Activo
                 </span>
               </h3>
-              <p className="text-xs text-slate-400">Tabla de posiciones de campers y astronautas del código</p>
+              <p className="text-xs text-slate-400">Tabla de posiciones de campers sincronizada en tiempo real</p>
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-2 rounded-xl bg-brand-darker/60 hover:bg-brand-surface border border-brand-border/60 text-slate-400 hover:text-white transition-all"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleManualRefresh}
+              disabled={isRefreshing}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand-surface hover:bg-brand-surfaceLight border border-brand-border text-brand-sky font-semibold text-xs transition-all cursor-pointer disabled:opacity-50"
+              title="Sincronizar puntajes desde el repositorio de Git"
+            >
+              <RotateCcw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">Sincronizar Git</span>
+            </button>
+
+            <button
+              onClick={onClose}
+              className="p-2 rounded-xl bg-brand-darker/60 hover:bg-brand-surface border border-brand-border/60 text-slate-400 hover:text-white transition-all cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Filters Row */}
@@ -155,6 +186,12 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
                     </a>
                     <p className="text-[10px] text-slate-400 mt-1">{record.campus}</p>
 
+                    {record.verifiedInGit && (
+                      <span className="mt-1.5 inline-flex items-center gap-1 text-[9px] font-mono px-2 py-0.5 rounded-full bg-brand-aqua/20 text-brand-aqua border border-brand-aqua/40">
+                        <Check className="w-3 h-3" /> Git Verificado
+                      </span>
+                    )}
+
                     <div className="mt-3 flex items-center justify-center gap-3 w-full pt-2 border-t border-white/10">
                       <div>
                         <span className="text-[9px] text-slate-400 block font-mono">WPM</span>
@@ -180,6 +217,7 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
                   <th className="py-2.5 px-4">Camper</th>
                   <th className="py-2.5 px-4 hidden sm:table-cell">Sede Campus</th>
                   <th className="py-2.5 px-4 text-center">Lenguaje</th>
+                  <th className="py-2.5 px-4 text-center">Estado Git</th>
                   <th className="py-2.5 px-4 text-center">WPM</th>
                   <th className="py-2.5 px-4 text-center">Precisión</th>
                 </tr>
@@ -221,6 +259,17 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
                       <span className="px-2 py-0.5 rounded-full bg-brand-surface border border-brand-border/60 text-[10px] text-slate-300">
                         {LANGUAGE_METADATA[r.language]?.label || r.language}
                       </span>
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      {r.verifiedInGit ? (
+                        <span className="inline-flex items-center gap-1 text-[9px] font-mono px-2 py-0.5 rounded-full bg-brand-aqua/15 text-brand-aqua border border-brand-aqua/30 font-bold">
+                          <Check className="w-2.5 h-2.5" /> Git
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[9px] font-mono px-2 py-0.5 rounded-full bg-brand-surface text-slate-400 border border-brand-border/50">
+                          Local
+                        </span>
+                      )}
                     </td>
                     <td className="py-3 px-4 text-center font-bold text-brand-cyan text-sm">
                       {r.wpm}

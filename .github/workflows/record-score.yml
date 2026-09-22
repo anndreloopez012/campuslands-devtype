@@ -1,0 +1,70 @@
+name: Record Verified Score to Git
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  process-score:
+    if: startsWith(github.event.issue.title, '[SCORE]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Process and validate score payload
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_USER: ${{ github.event.issue.user.login }}
+        run: |
+          node scripts/record-score.mjs
+
+      - name: Commit updated scores.json to Git
+        run: |
+          git config --global user.name "Campuslands Bot"
+          git config --global user.email "bot@campuslands.com"
+          git add public/scores.json
+          if git diff --staged --quiet; then
+            echo "No hay cambios en scores.json"
+          else
+            git commit -m "chore(scores): registrar récord verificado en git para @${{ github.event.issue.user.login }}"
+            git push origin main
+          fi
+
+      - name: Comment and close issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const commentBody = `### 🚀 ¡Puntaje Validado y Sincronizado en Git!
+            
+            ¡Excelente desempeño, @${context.payload.issue.user.login}!
+            Tu récord ha sido verificado e incorporado en el archivo oficial \`public/scores.json\` del repositorio.
+            
+            Puedes consultar el ranking actualizado en vivo:
+            👉 **https://anndreloopez012.github.io/campuslands-devtype/**`;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: commentBody
+            });
+
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              state: 'closed',
+              state_reason: 'completed'
+            });
