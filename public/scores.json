@@ -1,5 +1,22 @@
 [
   {
+    "githubUsername": "allisonrvargas",
+    "camperName": "allisonvargass",
+    "avatarUrl": "https://avatars.githubusercontent.com/u/256380286?v=4",
+    "campus": "Campuslands",
+    "language": "typescript",
+    "level": "junior",
+    "mode": "shortcuts",
+    "wpm": 181,
+    "cpm": 2175,
+    "accuracy": 100,
+    "errors": 0,
+    "timeSeconds": 30,
+    "id": "score-git-1790109580444",
+    "date": "2026-09-22",
+    "verifiedInGit": true
+  },
+  {
     "githubUsername": "anndreloopez012",
     "camperName": "Andre Lopez",
     "avatarUrl": "https://avatars.githubusercontent.com/u/104395015?v=4",
