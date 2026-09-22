@@ -59,7 +59,8 @@ export const CamperProfileCard: React.FC<CamperProfileCardProps> = ({
             <img
               src={user.avatarUrl}
               alt={user.username}
-              className="w-16 h-16 rounded-2xl border-2 border-brand-cyan object-cover shadow-lg shadow-brand-cyan/30"
+              className="w-16 h-16 rounded-2xl border-2 border-brand-cyan object-cover shadow-lg shadow-brand-cyan/30 flex-shrink-0"
+              style={{ width: '64px', height: '64px', minWidth: '64px', minHeight: '64px', objectFit: 'cover', borderRadius: '16px' }}
               onError={(e) => {
                 (e.target as HTMLImageElement).src = 'https://avatars.githubusercontent.com/u/104395015?v=4';
               }}
