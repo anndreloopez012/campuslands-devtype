@@ -60,8 +60,8 @@ const INITIAL_FALLBACK_SCORES: ScoreRecord[] = [
 
 export async function fetchRemoteScores(): Promise<ScoreRecord[]> {
   try {
-    // Attempt to load from relative public/scores.json (works on GitHub Pages & local)
-    const localRes = await fetch('./scores.json', { cache: 'no-store' });
+    // Attempt to load from relative public/scores.json with cache buster
+    const localRes = await fetch(`./scores.json?t=${Date.now()}`, { cache: 'no-store' });
     if (localRes.ok) {
       const data = await localRes.json();
       if (Array.isArray(data) && data.length > 0) {
@@ -72,7 +72,7 @@ export async function fetchRemoteScores(): Promise<ScoreRecord[]> {
   } catch {
     // Fallback to raw GitHub if relative path fails
     try {
-      const gitRawUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/public/scores.json`;
+      const gitRawUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/public/scores.json?t=${Date.now()}`;
       const rawRes = await fetch(gitRawUrl, { cache: 'no-store' });
       if (rawRes.ok) {
         const data = await rawRes.json();

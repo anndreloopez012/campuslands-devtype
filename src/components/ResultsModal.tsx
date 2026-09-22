@@ -273,13 +273,25 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
           <div className="w-8 h-8 rounded-xl bg-brand-cyan/20 border border-brand-cyan/40 flex items-center justify-center text-brand-sky flex-shrink-0 mt-0.5">
             <Zap className="w-4 h-4 text-brand-aqua" />
           </div>
-          <div className="text-xs font-mono">
-            <p className="text-white font-bold flex items-center gap-1.5">
-              <span>Sincronización Git en Tiempo Real (GitOps)</span>
-              <span className="px-1.5 py-0.2 rounded bg-brand-aqua/20 text-brand-aqua text-[9px]">Oficial</span>
-            </p>
-            <p className="text-slate-400 text-[11px] mt-0.5 leading-relaxed">
-              Pulsa <strong>Sincronizar en Git Oficial</strong> para registrar tu score en GitHub. Una GitHub Action verificará tus {stats.wpm} WPM y creará un commit automático en <code className="text-brand-sky">public/scores.json</code>.
+          <div className="text-xs font-mono w-full">
+            <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
+              <p className="text-white font-bold flex items-center gap-1.5">
+                <span>Sincronización Git en Tiempo Real (GitOps)</span>
+                <span className="px-1.5 py-0.2 rounded bg-brand-aqua/20 text-brand-aqua text-[9px]">Oficial</span>
+              </p>
+              {user.username && user.username !== 'camper-campuslands' ? (
+                <span className="flex items-center gap-1 text-[11px] text-brand-cyan bg-brand-cyan/15 px-2 py-0.5 rounded-md border border-brand-cyan/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-aqua animate-pulse"></span>
+                  <span>@{user.username} listo para Git</span>
+                </span>
+              ) : (
+                <span className="text-[10px] text-brand-amber bg-brand-amber/10 px-2 py-0.5 rounded border border-brand-amber/30">
+                  ⚠️ Perfil predeterminado
+                </span>
+              )}
+            </div>
+            <p className="text-slate-400 text-[11px] leading-relaxed">
+              Al pulsar <strong>Sincronizar en Git Oficial</strong>, GitHub Actions validará tus {stats.wpm} WPM y creará un commit en <code className="text-brand-sky">public/scores.json</code>. Tu récord quedará inmediatamente disponible para todos los campers de Campuslands.
             </p>
           </div>
         </div>
@@ -293,7 +305,11 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
             title="Abre el registro oficial en GitHub para que una Action lo guarde en git"
           >
             <Trophy className="w-4 h-4 text-brand-amber group-hover:rotate-12 transition-transform" />
-            <span>Sincronizar en Git Oficial</span>
+            <span>
+              {user.username && user.username !== 'camper-campuslands'
+                ? `Sincronizar @${user.username} en Git Oficial`
+                : 'Sincronizar en Git Oficial'}
+            </span>
           </button>
 
           {/* Quick Local Save Button */}
