@@ -135,7 +135,8 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
                     <img
                       src={record.avatarUrl}
                       alt={record.camperName}
-                      className="w-14 h-14 rounded-full border-2 border-white/50 object-cover shadow-md mb-2"
+                      className="w-14 h-14 rounded-full border-2 border-white/50 object-cover shadow-md mb-2 flex-shrink-0"
+                      style={{ width: '56px', height: '56px', minWidth: '56px', minHeight: '56px', borderRadius: '9999px', objectFit: 'cover' }}
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = 'https://avatars.githubusercontent.com/u/104395015?v=4';
                       }}
@@ -194,7 +195,8 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onCl
                         <img
                           src={r.avatarUrl}
                           alt={r.camperName}
-                          className="w-7 h-7 rounded-full object-cover border border-brand-border"
+                          className="w-7 h-7 rounded-full object-cover border border-brand-border flex-shrink-0"
+                          style={{ width: '28px', height: '28px', minWidth: '28px', minHeight: '28px', borderRadius: '9999px', objectFit: 'cover' }}
                           onError={(e) => {
                             (e.target as HTMLImageElement).src = 'https://avatars.githubusercontent.com/u/104395015?v=4';
                           }}

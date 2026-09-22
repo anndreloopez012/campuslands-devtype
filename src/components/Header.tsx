@@ -49,7 +49,12 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-3 cursor-pointer group" onClick={() => onModeChange('sprint')}>
           <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-brand-deep via-brand-cyan-dark to-brand-cyan p-[2px] shadow-lg shadow-brand-cyan/20 group-hover:shadow-brand-cyan/40 transition-all">
             <div className="w-full h-full bg-brand-petroleum rounded-[10px] flex items-center justify-center overflow-hidden">
-              <img src="./favicon.svg" alt="Campuslands Helmet" className="w-8 h-8 object-contain filter drop-shadow(0 0 4px #2CAAFF)" />
+              <img
+                src="./favicon.svg"
+                alt="Campuslands Helmet"
+                className="w-8 h-8 object-contain filter drop-shadow(0 0 4px #2CAAFF)"
+                style={{ width: '32px', height: '32px', maxWidth: '32px', maxHeight: '32px' }}
+              />
             </div>
             <span className="absolute -top-1 -right-1 flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-aqua opacity-75"></span>
@@ -197,7 +202,8 @@ export const Header: React.FC<HeaderProps> = ({
             <img
               src={user.avatarUrl}
               alt={user.username}
-              className="w-7 h-7 rounded-full border border-brand-cyan/60 object-cover"
+              className="w-7 h-7 rounded-full border border-brand-cyan/60 object-cover flex-shrink-0"
+              style={{ width: '28px', height: '28px', minWidth: '28px', minHeight: '28px', borderRadius: '9999px', objectFit: 'cover' }}
               onError={(e) => {
                 (e.target as HTMLImageElement).src = 'https://avatars.githubusercontent.com/u/104395015?v=4';
               }}
