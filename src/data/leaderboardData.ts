@@ -1,8 +1,12 @@
 import { ScoreRecord, SupportedLanguage, CamperLevel, GameMode } from '../types';
 
-const INITIAL_CAMPUS_LEADERBOARD: ScoreRecord[] = [
+const STORAGE_KEY = 'campuslands_devtype_leaderboard_v1';
+const REPO_OWNER = 'anndreloopez012';
+const REPO_NAME = 'campuslands-devtype';
+
+const INITIAL_FALLBACK_SCORES: ScoreRecord[] = [
   {
-    id: 'rank-1',
+    id: 'score-git-1',
     githubUsername: 'anndreloopez012',
     camperName: 'Andre Lopez',
     avatarUrl: 'https://avatars.githubusercontent.com/u/104395015?v=4',
@@ -10,15 +14,16 @@ const INITIAL_CAMPUS_LEADERBOARD: ScoreRecord[] = [
     language: 'javascript',
     level: 'senior',
     mode: 'sprint',
-    wpm: 104,
-    cpm: 520,
-    accuracy: 99.4,
+    wpm: 112,
+    cpm: 560,
+    accuracy: 99.8,
     errors: 1,
-    timeSeconds: 28,
-    date: '2026-09-22'
+    timeSeconds: 26,
+    date: '2026-09-22',
+    verifiedInGit: true
   },
   {
-    id: 'rank-2',
+    id: 'score-git-2',
     githubUsername: 'valen-code-bga',
     camperName: 'Valentina Restrepo',
     avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
@@ -31,10 +36,11 @@ const INITIAL_CAMPUS_LEADERBOARD: ScoreRecord[] = [
     accuracy: 98.7,
     errors: 2,
     timeSeconds: 32,
-    date: '2026-09-21'
+    date: '2026-09-21',
+    verifiedInGit: true
   },
   {
-    id: 'rank-3',
+    id: 'score-git-3',
     githubUsername: 'mateo-dev-mde',
     camperName: 'Mateo Osorio',
     avatarUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
@@ -47,70 +53,52 @@ const INITIAL_CAMPUS_LEADERBOARD: ScoreRecord[] = [
     accuracy: 99.1,
     errors: 1,
     timeSeconds: 35,
-    date: '2026-09-20'
-  },
-  {
-    id: 'rank-4',
-    githubUsername: 'camilo-rust-cali',
-    camperName: 'Camilo Benítez',
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    campus: 'Campuslands Cali',
-    language: 'rust',
-    level: 'senior',
-    mode: 'blaster',
-    wpm: 89,
-    cpm: 445,
-    accuracy: 97.9,
-    errors: 3,
-    timeSeconds: 40,
-    date: '2026-09-19'
-  },
-  {
-    id: 'rank-5',
-    githubUsername: 'sofia-java-bga',
-    camperName: 'Sofía Calderón',
-    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-    campus: 'Campuslands Bucaramanga',
-    language: 'java',
-    level: 'mid',
-    mode: 'shortcuts',
-    wpm: 86,
-    cpm: 430,
-    accuracy: 100,
-    errors: 0,
-    timeSeconds: 42,
-    date: '2026-09-18'
-  },
-  {
-    id: 'rank-6',
-    githubUsername: 'daniel-go-gua',
-    camperName: 'Daniel Asturias',
-    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-    campus: 'Campuslands Guatemala',
-    language: 'go',
-    level: 'junior',
-    mode: 'sprint',
-    wpm: 78,
-    cpm: 390,
-    accuracy: 96.5,
-    errors: 4,
-    timeSeconds: 45,
-    date: '2026-09-17'
+    date: '2026-09-20',
+    verifiedInGit: true
   }
 ];
 
-const STORAGE_KEY = 'campuslands_devtype_leaderboard_v1';
+export async function fetchRemoteScores(): Promise<ScoreRecord[]> {
+  try {
+    // Attempt to load from relative public/scores.json (works on GitHub Pages & local)
+    const localRes = await fetch('./scores.json', { cache: 'no-store' });
+    if (localRes.ok) {
+      const data = await localRes.json();
+      if (Array.isArray(data) && data.length > 0) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        return data;
+      }
+    }
+  } catch {
+    // Fallback to raw GitHub if relative path fails
+    try {
+      const gitRawUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/public/scores.json`;
+      const rawRes = await fetch(gitRawUrl, { cache: 'no-store' });
+      if (rawRes.ok) {
+        const data = await rawRes.json();
+        if (Array.isArray(data) && data.length > 0) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          return data;
+        }
+      }
+    } catch {
+      // Fallback to local storage or defaults
+    }
+  }
+
+  return getLeaderboard();
+}
 
 export function getLeaderboard(): ScoreRecord[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_CAMPUS_LEADERBOARD));
-      return INITIAL_CAMPUS_LEADERBOARD;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_FALLBACK_SCORES));
+      return INITIAL_FALLBACK_SCORES;
     }
     return JSON.parse(raw);
   } catch {
-    return INITIAL_CAMPUS_LEADERBOARD;
+    return INITIAL_FALLBACK_SCORES;
   }
 }
 
@@ -118,23 +106,99 @@ export function saveScore(record: Omit<ScoreRecord, 'id' | 'date'>): ScoreRecord
   const current = getLeaderboard();
   const newRecord: ScoreRecord = {
     ...record,
-    id: 'score-' + Date.now(),
-    date: new Date().toISOString().split('T')[0]
+    id: 'score-local-' + Date.now(),
+    date: new Date().toISOString().split('T')[0],
+    verifiedInGit: false
   };
 
-  const updated = [newRecord, ...current].sort((a, b) => {
-    // Sort by WPM descending, then accuracy descending
+  const updated = [newRecord, ...current.filter(c => c.id !== newRecord.id)].sort((a, b) => {
     if (b.wpm !== a.wpm) return b.wpm - a.wpm;
     return b.accuracy - a.accuracy;
   });
 
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated.slice(0, 100)));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated.slice(0, 150)));
   } catch (err) {
     console.error('Error guardando en localStorage:', err);
   }
 
   return newRecord;
+}
+
+export function generateGitIssuePayload(record: Omit<ScoreRecord, 'id' | 'date'>) {
+  const payload = {
+    githubUsername: record.githubUsername,
+    camperName: record.camperName,
+    avatarUrl: record.avatarUrl,
+    campus: record.campus || 'Campuslands',
+    language: record.language,
+    level: record.level,
+    mode: record.mode,
+    wpm: record.wpm,
+    cpm: record.cpm,
+    accuracy: record.accuracy,
+    errors: record.errors,
+    timeSeconds: record.timeSeconds
+  };
+
+  const title = `[SCORE] ${record.githubUsername} - ${record.wpm} WPM (${record.language})`;
+  const body = `### 🏆 Solicitud de Registro de Score Oficial en Git
+
+Un camper ha completado una prueba verificada en Campuslands DevType.
+
+\`\`\`json
+${JSON.stringify(payload, null, 2)}
+\`\`\`
+
+> *Este Issue es procesado y validado automáticamente por el workflow de GitHub Actions \`record-score.yml\` para incorporar el récord en \`public/scores.json\`.*`;
+
+  return { title, body };
+}
+
+export function getGitIssueSubmissionUrl(record: Omit<ScoreRecord, 'id' | 'date'>): string {
+  const { title, body } = generateGitIssuePayload(record);
+  return `https://github.com/${REPO_OWNER}/${REPO_NAME}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}&labels=score-submission`;
+}
+
+export async function submitScoreViaGitHubApi(
+  record: Omit<ScoreRecord, 'id' | 'date'>,
+  token?: string
+): Promise<{ success: boolean; issueUrl?: string; error?: string }> {
+  const { title, body } = generateGitIssuePayload(record);
+
+  if (!token) {
+    return {
+      success: false,
+      error: 'Token de GitHub no provisto'
+    };
+  }
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/vnd.github+json',
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title,
+        body,
+        labels: ['score-submission']
+      })
+    });
+
+    if (!res.ok) {
+      const errData = await res.json();
+      return { success: false, error: errData.message || 'Error al comunicarse con GitHub API' };
+    }
+
+    const data = await res.json();
+    return { success: true, issueUrl: data.html_url };
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Error inesperado';
+    return { success: false, error: msg };
+  }
 }
 
 export function getFilteredLeaderboard(

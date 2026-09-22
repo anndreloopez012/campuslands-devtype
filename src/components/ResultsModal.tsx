@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import { Trophy, Download, RotateCcw, Share2, Check, ArrowRight, Zap, Target, Clock, AlertTriangle } from 'lucide-react';
 import { SupportedLanguage, CamperLevel, GameMode, GitHubUser, WpmSample } from '../types';
-import { saveScore } from '../data/leaderboardData';
+import { saveScore, getGitIssueSubmissionUrl } from '../data/leaderboardData';
 import { LANGUAGE_METADATA, LEVEL_METADATA } from '../data/codeSnippets';
 
 interface ResultsModalProps {
@@ -73,6 +73,41 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
       onOpenLeaderboard();
       onClose();
     }, 1200);
+  };
+
+  const handleSyncGitRecord = () => {
+    saveScore({
+      githubUsername: user.username,
+      camperName: user.name || user.username,
+      avatarUrl: user.avatarUrl,
+      campus: 'Campuslands',
+      language,
+      level,
+      mode,
+      wpm: stats.wpm,
+      cpm: stats.cpm,
+      accuracy: stats.accuracy,
+      errors: stats.errors,
+      timeSeconds: stats.timeSeconds
+    });
+
+    const url = getGitIssueSubmissionUrl({
+      githubUsername: user.username,
+      camperName: user.name || user.username,
+      avatarUrl: user.avatarUrl,
+      campus: 'Campuslands',
+      language,
+      level,
+      mode,
+      wpm: stats.wpm,
+      cpm: stats.cpm,
+      accuracy: stats.accuracy,
+      errors: stats.errors,
+      timeSeconds: stats.timeSeconds
+    });
+
+    window.open(url, '_blank', 'noopener,noreferrer');
+    setScoreUploaded(true);
   };
 
   const handleDownloadCard = () => {
@@ -233,35 +268,58 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
           </div>
         </div>
 
+        {/* Git Synchronization Info Banner */}
+        <div className="w-full bg-brand-darker/90 border border-brand-cyan/40 rounded-2xl p-3.5 text-left flex items-start gap-3">
+          <div className="w-8 h-8 rounded-xl bg-brand-cyan/20 border border-brand-cyan/40 flex items-center justify-center text-brand-sky flex-shrink-0 mt-0.5">
+            <Zap className="w-4 h-4 text-brand-aqua" />
+          </div>
+          <div className="text-xs font-mono">
+            <p className="text-white font-bold flex items-center gap-1.5">
+              <span>Sincronización Git en Tiempo Real (GitOps)</span>
+              <span className="px-1.5 py-0.2 rounded bg-brand-aqua/20 text-brand-aqua text-[9px]">Oficial</span>
+            </p>
+            <p className="text-slate-400 text-[11px] mt-0.5 leading-relaxed">
+              Pulsa <strong>Sincronizar en Git Oficial</strong> para registrar tu score en GitHub. Una GitHub Action verificará tus {stats.wpm} WPM y creará un commit automático en <code className="text-brand-sky">public/scores.json</code>.
+            </p>
+          </div>
+        </div>
+
         {/* Buttons Row */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full pt-2">
-          {/* Upload Score Button */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full pt-1">
+          {/* Git IssueOps Sync Button */}
+          <button
+            onClick={handleSyncGitRecord}
+            className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-brand-deep via-brand-blue to-brand-cyan border border-brand-cyan text-white font-bold text-xs tracking-wider uppercase shadow-lg shadow-brand-cyan/30 hover:scale-102 transition-all flex items-center justify-center gap-2 cursor-pointer group"
+            title="Abre el registro oficial en GitHub para que una Action lo guarde en git"
+          >
+            <Trophy className="w-4 h-4 text-brand-amber group-hover:rotate-12 transition-transform" />
+            <span>Sincronizar en Git Oficial</span>
+          </button>
+
+          {/* Quick Local Save Button */}
           <button
             onClick={handleUploadScore}
             disabled={scoreUploaded}
-            className="w-full sm:flex-1 py-3 px-5 rounded-xl bg-gradient-to-r from-brand-deep to-brand-blue border border-brand-cyan/60 text-white font-bold text-xs tracking-wider uppercase shadow-lg shadow-brand-blue/30 hover:scale-102 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            className="w-full sm:w-auto py-3 px-4 rounded-xl bg-brand-surface hover:bg-brand-surfaceLight border border-brand-border text-slate-200 font-bold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
           >
             {scoreUploaded ? (
               <>
                 <Check className="w-4 h-4 text-brand-aqua" />
-                <span>¡Puntaje Registrado!</span>
+                <span>Guardado</span>
               </>
             ) : (
-              <>
-                <Trophy className="w-4 h-4 text-brand-amber" />
-                <span>Subir al Ranking Global</span>
-              </>
+              <span>Guardar en Navegador</span>
             )}
           </button>
 
           {/* Download Certificate Card */}
           <button
             onClick={handleDownloadCard}
-            className="w-full sm:w-auto py-3 px-4 rounded-xl bg-brand-surface hover:bg-brand-surfaceLight border border-brand-border text-brand-sky font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
+            className="w-full sm:w-auto py-3 px-3.5 rounded-xl bg-brand-darker hover:bg-brand-surface border border-brand-border text-brand-sky font-semibold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
             title="Descargar imagen oficial para compartir en redes"
           >
-            <Download className="w-4 h-4" />
-            <span>Descargar Tarjeta</span>
+            <Download className="w-3.5 h-3.5" />
+            <span>Tarjeta</span>
           </button>
 
           {/* Play Again */}
@@ -270,9 +328,9 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
               onClose();
               onPlayAgain();
             }}
-            className="w-full sm:w-auto py-3 px-4 rounded-xl bg-brand-darker hover:bg-brand-surface border border-brand-border text-slate-300 hover:text-white font-semibold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+            className="w-full sm:w-auto py-3 px-3.5 rounded-xl bg-brand-darker hover:bg-brand-surface border border-brand-border text-slate-400 hover:text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-3.5 h-3.5" />
             <span>Reintentar</span>
           </button>
         </div>

@@ -40,6 +40,7 @@ export interface ScoreRecord {
   errors: number;
   timeSeconds: number;
   date: string;
+  verifiedInGit?: boolean;
 }
 
 export interface SnippetItem {
