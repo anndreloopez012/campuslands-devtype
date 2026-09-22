@@ -1,0 +1,238 @@
+import React, { useState } from 'react';
+import { X, Trophy, Medal, Search, Flame, Zap, Award } from 'lucide-react';
+import { ScoreRecord, SupportedLanguage, CamperLevel, GameMode } from '../types';
+import { getFilteredLeaderboard } from '../data/leaderboardData';
+import { LANGUAGE_METADATA } from '../data/codeSnippets';
+
+interface LeaderboardModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, onClose }) => {
+  const [selectedLang, setSelectedLang] = useState<SupportedLanguage | 'all'>('all');
+  const [selectedLevel, setSelectedLevel] = useState<CamperLevel | 'all'>('all');
+  const [selectedMode, setSelectedMode] = useState<GameMode | 'all'>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  if (!isOpen) return null;
+
+  const records: ScoreRecord[] = getFilteredLeaderboard(selectedLang, selectedLevel, selectedMode);
+
+  const filteredRecords = records.filter(r =>
+    r.camperName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    r.githubUsername.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    r.campus.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const top3 = filteredRecords.slice(0, 3);
+  const remaining = filteredRecords.slice(3);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-darker/80 backdrop-blur-md animate-fadeIn">
+      <div className="relative w-full max-w-4xl max-h-[90vh] bg-brand-petroleum border-2 border-brand-cyan/60 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-brand-cyan/20 flex flex-col overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between pb-4 border-b border-brand-border/60">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-brand-amber/20 border border-brand-amber/50 flex items-center justify-center text-brand-amber">
+              <Trophy className="w-6 h-6 text-brand-amber" />
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-white flex items-center gap-2">
+                <span>Ranking Oficial Campuslands</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-aqua/20 text-brand-aqua border border-brand-aqua/30 font-mono">
+                  En Vivo
+                </span>
+              </h3>
+              <p className="text-xs text-slate-400">Tabla de posiciones de campers y astronautas del código</p>
+            </div>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="p-2 rounded-xl bg-brand-darker/60 hover:bg-brand-surface border border-brand-border/60 text-slate-400 hover:text-white transition-all"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Filters Row */}
+        <div className="py-4 grid grid-cols-1 sm:grid-cols-4 gap-2.5 border-b border-brand-border/40">
+          {/* Search */}
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <input
+              type="text"
+              placeholder="Buscar camper..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-brand-darker border border-brand-border rounded-xl py-2 pl-8 pr-3 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-brand-cyan"
+            />
+          </div>
+
+          {/* Language filter */}
+          <select
+            value={selectedLang}
+            onChange={(e) => setSelectedLang(e.target.value as SupportedLanguage | 'all')}
+            className="bg-brand-darker border border-brand-border rounded-xl py-2 px-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-cyan"
+          >
+            <option value="all">🌐 Todos los Lenguajes</option>
+            {Object.entries(LANGUAGE_METADATA).map(([key, val]) => (
+              <option key={key} value={key}>
+                {val.icon} {val.label}
+              </option>
+            ))}
+          </select>
+
+          {/* Level filter */}
+          <select
+            value={selectedLevel}
+            onChange={(e) => setSelectedLevel(e.target.value as CamperLevel | 'all')}
+            className="bg-brand-darker border border-brand-border rounded-xl py-2 px-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-cyan"
+          >
+            <option value="all">⭐ Todos los Niveles</option>
+            <option value="junior">🚀 Junior (Padawan)</option>
+            <option value="mid">🛸 Mid (Explorer)</option>
+            <option value="senior">🌌 Senior (Astronaut)</option>
+          </select>
+
+          {/* Mode filter */}
+          <select
+            value={selectedMode}
+            onChange={(e) => setSelectedMode(e.target.value as GameMode | 'all')}
+            className="bg-brand-darker border border-brand-border rounded-xl py-2 px-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-cyan"
+          >
+            <option value="all">🎮 Todos los Modos</option>
+            <option value="sprint">⚡ Speed Sprint</option>
+            <option value="blaster">👾 Bug Blaster</option>
+            <option value="shortcuts">⌨️ Shortcuts Dojo</option>
+            <option value="symbols">🎯 Symbol Storm</option>
+          </select>
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="overflow-y-auto flex-1 py-4 pr-1 scrollbar-thin scrollbar-thumb-brand-border scrollbar-track-transparent">
+          {/* Top 3 Podium */}
+          {top3.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+              {top3.map((record, index) => {
+                const colors = [
+                  'from-brand-amber/30 to-brand-amber/5 border-brand-amber/60 text-brand-amber',
+                  'from-slate-300/20 to-slate-400/5 border-slate-300/60 text-slate-200',
+                  'from-amber-700/20 to-amber-900/5 border-amber-600/60 text-amber-500'
+                ];
+                const labels = ['🥇 1er Lugar', '🥈 2do Lugar', '🥉 3er Lugar'];
+
+                return (
+                  <div
+                    key={record.id}
+                    className={`bg-gradient-to-b ${colors[index]} border-2 rounded-2xl p-4 flex flex-col items-center text-center relative shadow-lg`}
+                  >
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
+                      {labels[index]}
+                    </span>
+
+                    <img
+                      src={record.avatarUrl}
+                      alt={record.camperName}
+                      className="w-14 h-14 rounded-full border-2 border-white/50 object-cover shadow-md mb-2"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://avatars.githubusercontent.com/u/104395015?v=4';
+                      }}
+                    />
+
+                    <h4 className="font-bold text-white text-sm leading-tight">
+                      {record.camperName}
+                    </h4>
+                    <a
+                      href={`https://github.com/${record.githubUsername}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-brand-sky hover:underline font-mono"
+                    >
+                      @{record.githubUsername}
+                    </a>
+                    <p className="text-[10px] text-slate-400 mt-1">{record.campus}</p>
+
+                    <div className="mt-3 flex items-center justify-center gap-3 w-full pt-2 border-t border-white/10">
+                      <div>
+                        <span className="text-[9px] text-slate-400 block font-mono">WPM</span>
+                        <strong className="text-base text-white font-mono font-black">{record.wpm}</strong>
+                      </div>
+                      <div>
+                        <span className="text-[9px] text-slate-400 block font-mono">Precisión</span>
+                        <strong className="text-base text-brand-aqua font-mono font-black">{record.accuracy}%</strong>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Remaining List Table */}
+          <div className="bg-brand-darker/60 rounded-2xl border border-brand-border/60 overflow-hidden">
+            <table className="w-full text-left text-xs font-mono">
+              <thead className="bg-brand-surface/60 text-slate-400 uppercase tracking-wider text-[10px] border-b border-brand-border/40">
+                <tr>
+                  <th className="py-2.5 px-4 text-center">Pos</th>
+                  <th className="py-2.5 px-4">Camper</th>
+                  <th className="py-2.5 px-4 hidden sm:table-cell">Sede Campus</th>
+                  <th className="py-2.5 px-4 text-center">Lenguaje</th>
+                  <th className="py-2.5 px-4 text-center">WPM</th>
+                  <th className="py-2.5 px-4 text-center">Precisión</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-brand-border/30">
+                {filteredRecords.map((r, i) => (
+                  <tr key={r.id} className="hover:bg-brand-surface/40 transition-colors">
+                    <td className="py-3 px-4 text-center font-bold text-slate-400">
+                      #{i + 1}
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-2.5">
+                        <img
+                          src={r.avatarUrl}
+                          alt={r.camperName}
+                          className="w-7 h-7 rounded-full object-cover border border-brand-border"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://avatars.githubusercontent.com/u/104395015?v=4';
+                          }}
+                        />
+                        <div>
+                          <p className="font-bold text-white text-xs">{r.camperName}</p>
+                          <a
+                            href={`https://github.com/${r.githubUsername}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[10px] text-brand-sky hover:underline"
+                          >
+                            @{r.githubUsername}
+                          </a>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-slate-300 hidden sm:table-cell">
+                      {r.campus}
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      <span className="px-2 py-0.5 rounded-full bg-brand-surface border border-brand-border/60 text-[10px] text-slate-300">
+                        {LANGUAGE_METADATA[r.language]?.label || r.language}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-center font-bold text-brand-cyan text-sm">
+                      {r.wpm}
+                    </td>
+                    <td className="py-3 px-4 text-center text-brand-aqua font-semibold">
+                      {r.accuracy}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
