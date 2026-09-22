@@ -14,7 +14,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const languages = Object.keys(LANGUAGE_METADATA) as SupportedLanguage[];
 
   return (
-    <div className="w-full">
+    <div id="tour-language-selector" className="w-full">
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 font-mono flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-brand-cyan"></span>

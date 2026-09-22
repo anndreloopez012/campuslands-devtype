@@ -30,7 +30,7 @@ export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
   const normPressed = normalizeKey(lastPressedChar);
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-brand-petroleum/60 p-3 rounded-2xl border border-brand-border/40 backdrop-blur-sm select-none shadow-xl">
+    <div id="tour-virtual-keyboard" className="w-full max-w-4xl mx-auto bg-brand-petroleum/60 p-3 rounded-2xl border border-brand-border/40 backdrop-blur-sm select-none shadow-xl">
       <div className="flex flex-col gap-1.5 font-mono text-xs">
         {rows.map((row, rIdx) => (
           <div key={rIdx} className="flex justify-center gap-1.5 w-full">

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Volume2, VolumeX, Trophy, User, Keyboard, Sparkles, Terminal } from 'lucide-react';
+import { Volume2, VolumeX, Trophy, User, Keyboard, Sparkles, Terminal, HelpCircle } from 'lucide-react';
 import { SwitchProfile, GitHubUser, GameMode } from '../types';
 import { soundEngine } from '../audio/soundEngine';
+import { startFaqTour } from '../utils/faqTour';
 
 interface HeaderProps {
   currentProfile: SwitchProfile;
@@ -46,7 +47,7 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="border-b border-brand-border/60 bg-brand-petroleum/90 backdrop-blur-md sticky top-0 z-40 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         {/* Logo & Brand */}
-        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => onModeChange('sprint')}>
+        <div id="tour-brand-logo" className="flex items-center gap-3 cursor-pointer group" onClick={() => onModeChange('sprint')}>
           <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-brand-deep via-brand-cyan-dark to-brand-cyan p-[2px] shadow-lg shadow-brand-cyan/20 group-hover:shadow-brand-cyan/40 transition-all">
             <div className="w-full h-full bg-brand-petroleum rounded-[10px] flex items-center justify-center overflow-hidden">
               <img
@@ -80,7 +81,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Center: Modes & VS Code Shortcuts Checkbox */}
         <div className="hidden lg:flex items-center gap-3">
-          <div className="bg-brand-darker/70 p-1.5 rounded-xl border border-brand-border/60 flex items-center gap-1">
+          <div id="tour-game-modes" className="bg-brand-darker/70 p-1.5 rounded-xl border border-brand-border/60 flex items-center gap-1">
             <button
               onClick={() => onModeChange('sprint')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
@@ -116,7 +117,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* VS Code Shortcut Training Checkbox */}
-          <label className="flex items-center gap-2 cursor-pointer bg-brand-darker/60 hover:bg-brand-surface/70 px-3 py-2 rounded-xl border border-brand-border/60 transition-all select-none">
+          <label id="tour-vscode-shortcuts" className="flex items-center gap-2 cursor-pointer bg-brand-darker/60 hover:bg-brand-surface/70 px-3 py-2 rounded-xl border border-brand-border/60 transition-all select-none">
             <input
               type="checkbox"
               checked={vsCodeShortcutCheck}
@@ -142,10 +143,10 @@ export const Header: React.FC<HeaderProps> = ({
           </label>
         </div>
 
-        {/* Right side: Audio Switches, Leaderboard & GitHub Profile */}
-        <div className="flex items-center gap-3">
+        {/* Right side: Audio Switches, FAQ, Leaderboard & GitHub Profile */}
+        <div className="flex items-center gap-2.5">
           {/* Switch Sound Picker */}
-          <div className="hidden sm:flex items-center gap-2 bg-brand-darker/60 p-1.5 px-2.5 rounded-xl border border-brand-border/60">
+          <div id="tour-switch-profile" className="hidden sm:flex items-center gap-2 bg-brand-darker/60 p-1.5 px-2.5 rounded-xl border border-brand-border/60">
             <select
               value={currentProfile}
               onChange={(e) => {
@@ -183,8 +184,20 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
+          {/* Interactive FAQ / Tour Button */}
+          <button
+            id="tour-faq-btn"
+            onClick={startFaqTour}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-brand-cyan/15 hover:bg-brand-cyan/25 border border-brand-cyan/50 text-brand-sky hover:text-white transition-all shadow-sm group"
+            title="Guía Interactiva & Preguntas Frecuentes (FAQ)"
+          >
+            <HelpCircle className="w-3.5 h-3.5 text-brand-cyan group-hover:rotate-12 transition-transform" />
+            <span className="hidden md:inline font-bold">Guía & FAQ</span>
+          </button>
+
           {/* Ranking Button */}
           <button
+            id="tour-leaderboard-btn"
             onClick={onOpenLeaderboard}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-brand-deep/40 hover:bg-brand-deep/80 border border-brand-blue/50 text-brand-sky hover:text-white transition-all shadow-sm group"
             title="Ver Tabla de Clasificación"
@@ -195,6 +208,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* GitHub Camper Profile Button */}
           <button
+            id="tour-camper-profile"
             onClick={onOpenProfile}
             className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-brand-surface/80 hover:bg-brand-surfaceLight border border-brand-border/80 transition-all group"
             title="Perfil de Camper GitHub"

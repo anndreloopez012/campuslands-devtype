@@ -70,7 +70,7 @@ export const CodeSprintGame: React.FC<CodeSprintGameProps> = ({
   return (
     <div className="w-full flex flex-col items-center gap-6">
       {/* HUD Dashboard */}
-      <div className="w-full max-w-5xl grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div id="tour-hud-dashboard" className="w-full max-w-5xl grid grid-cols-2 sm:grid-cols-4 gap-3">
         {/* WPM Stat */}
         <div className="bg-brand-petroleum/90 border border-brand-border/70 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden group">
           <div className="absolute -right-4 -bottom-4 w-16 h-16 bg-brand-cyan/10 rounded-full blur-xl group-hover:bg-brand-cyan/20 transition-all"></div>
@@ -162,6 +162,7 @@ export const CodeSprintGame: React.FC<CodeSprintGameProps> = ({
 
       {/* Code Terminal Box */}
       <div
+        id="tour-code-editor"
         ref={containerRef}
         tabIndex={0}
         onKeyDown={onKeyDownWrapper}

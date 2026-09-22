@@ -14,7 +14,7 @@ export const LevelSelector: React.FC<LevelSelectorProps> = ({
   const levels: CamperLevel[] = ['junior', 'mid', 'senior'];
 
   return (
-    <div className="flex items-center gap-1.5 bg-brand-darker/80 p-1 rounded-xl border border-brand-border/60">
+    <div id="tour-level-selector" className="flex items-center gap-1.5 bg-brand-darker/80 p-1 rounded-xl border border-brand-border/60">
       {levels.map((lvl) => {
         const meta = LEVEL_METADATA[lvl];
         const isSelected = currentLevel === lvl;
