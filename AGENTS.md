@@ -1,6 +1,6 @@
 # Protocolo Multi-Agente: Campuslands DevType
 
-Este repositorio forma parte de los proyectos de formación y desarrollo de **Campuslands**, colaborando en conjunto con Antigravity, Codex y Claude Code utilizando el baúl compartido de Obsidian (`/Users/macbookpro/Documents/Obsidian Vault`).
+Este repositorio forma parte de los proyectos de formación y desarrollo de **Campuslands**, colaborando en conjunto con Antigravity, Codex y Claude Code utilizando el baúl compartido de Obsidian (`/Users/macbookpro/Documents/OBSIDIAN`).
 
 ## Arquitectura y Stack
 - **Framework:** React 18 + TypeScript + Vite
